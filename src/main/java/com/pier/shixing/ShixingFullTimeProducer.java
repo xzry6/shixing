@@ -12,8 +12,8 @@ public class ShixingFullTimeProducer extends ShixingProducer implements Runnable
 
 	protected BlockingQueue<Integer> pagequeue;
 	
-	public ShixingFullTimeProducer(BlockingQueue<Integer> pagequeue, BlockingQueue<String> queue) {
-		super(queue);
+	public ShixingFullTimeProducer(BlockingQueue<Integer> pagequeue, BlockingQueue<String> queue, String id) {
+		super(queue,id);
 		this.pagequeue = pagequeue;
 	}
 

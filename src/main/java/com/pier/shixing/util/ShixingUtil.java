@@ -49,6 +49,10 @@ public class ShixingUtil {
 		return 0;
 	}
 	
+	public static void print(String id, String info) {
+		System.out.println(ShixingUtil.getTime()+id+", "+info);
+	}
+	
 	public static String getTime() {
 		return "["+df.format(new Date())+"]: ";
 	}

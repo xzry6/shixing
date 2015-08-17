@@ -18,7 +18,9 @@ import com.pier.util.Type;
 
 public abstract class ShixingProducer{
 
-	protected int count = 0;
+	protected String id;
+	
+	protected int count = 1;
 	
 	protected boolean bool = true;
 		  
@@ -26,9 +28,10 @@ public abstract class ShixingProducer{
 	
 	protected CloseableHttpClient httpClient;
 	
-	public ShixingProducer(BlockingQueue<String> queue) {
+	public ShixingProducer(BlockingQueue<String> queue, String id) {
 		super();
 		this.queue = queue;
+		this.id = id;
 	}
 	
 	
@@ -36,22 +39,23 @@ public abstract class ShixingProducer{
 		boolean bool = true;
 		try {
 			parse(login(t,url,page));
-			System.out.println(ShixingUtil.getTime()+"finish crawling on page "+page);
+			ShixingUtil.print(id,"finish crawling on page "+page);
 		} catch(Exception e) {
 			//e.printStackTrace();
 			bool = false;
-			System.out.println(ShixingUtil.getTime()+"crawling "+page+" failed");
+			ShixingUtil.print(id,"crawling page "+page+" failed");
 			count++;
 		}
 		finally {
 			try {
-				if(count%3==0) {
-					System.out.println("begin to sleep "+ShixingConfig.crawler_sleep_second+" seconds");
+				if(count%4==0) {
+					ShixingUtil.print(id,"begin to sleep "+ShixingConfig.crawler_sleep_second+" seconds");
 					TimeUnit.SECONDS.sleep(ShixingConfig.crawler_sleep_second);
 					if(count%5==0) {
 						ShixingUtil.writefile(page,"failed crawling on page");
 						bool = true;
 					}
+					count++;
 				}
 				TimeUnit.SECONDS.sleep(ShixingConfig.crawler_gap_second);
 			} catch (InterruptedException e) {
@@ -65,7 +69,7 @@ public abstract class ShixingProducer{
 	protected String login(Type t, String url, String page) throws Exception {
 		HttpPost post = new RequestBuilder(url,null,null,page).buildPost(t);
 		post.setConfig(ShixingUtil.getRequestConfig(ShixingConfig.crawler_timeout_millisecond));
-		System.out.println(ShixingUtil.getTime()+"begin to crawl on page "+page);
+		ShixingUtil.print(id,"begin to crawl on page "+page);
 		httpClient = HttpClients.custom()
 										.setDefaultRequestConfig(ShixingUtil.getRequestConfig(ShixingConfig.crawler_timeout_millisecond))
 										.build(); 
@@ -90,8 +94,9 @@ public abstract class ShixingProducer{
 			  return;
 		  	}
 		  queue.put(jsonurl);
-		  System.out.println("put one json into queue. queue size is now "+queue.size());
+		  //System.out.println("put one json into queue. queue size is now "+queue.size());
 		 }
+		ShixingUtil.print(id,"15 instances has been inserted into queue");
 	}
 	
 	

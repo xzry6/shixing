@@ -26,8 +26,11 @@ public class ShixingConsumer implements Runnable{
 	
 	private volatile BlockingQueue<String> queue;
 	
-	public ShixingConsumer(BlockingQueue<String> queue) {
+	private String id;
+	
+	public ShixingConsumer(BlockingQueue<String> queue, String id) {
 		super();
+		this.id = id;
 		this.queue = queue;
 	}
 
@@ -38,7 +41,9 @@ public class ShixingConsumer implements Runnable{
 				try {
 					login(url);
 				} catch (Exception e) {
-					e.printStackTrace();
+					//e.printStackTrace();
+					ShixingUtil.print(id,"failed to parse "+url);
+					ShixingUtil.print(id,"queue size is currently: "+queue.size());
 				}
 			}
 			else try {
@@ -51,7 +56,7 @@ public class ShixingConsumer implements Runnable{
 		
 	private void login(String url) throws Exception {
 		
-		System.out.println(ShixingUtil.getTime()+"start to grab information from "+url);
+		//System.out.println(ShixingUtil.getTime()+"start to grab information from "+url);
 		
 		HttpGet get = new RequestBuilder("http://shixin.court.gov.cn/personMore.do",null,null,null).buildGet(Type.Shixing, url);
 		get.setConfig(ShixingUtil.getRequestConfig(ShixingConfig.consumer_timeout_millisecond));
@@ -63,7 +68,7 @@ public class ShixingConsumer implements Runnable{
 	  String webtext = EntityUtils.toString(newEntity,"UTF-8");
 	  
 	  connect(webtext.replaceAll("\\\\n", ""));
-	  System.out.println(ShixingUtil.getTime()+"job done");
+	  //System.out.println(ShixingUtil.getTime()+"job done");
 	}
 	
 	
@@ -80,14 +85,15 @@ public class ShixingConsumer implements Runnable{
 			map.put("SHIXIN_ID", arr[0]);
 			if(!sc.checkExist("BLACKLIST", map, "")) {
 				sc.replaceInstance("BLACKLIST", columns, arr);
-				System.out.println("success insertion");
+				//System.out.println("success insertion");
 			}
 			else 
-				System.out.println("instance already exists!");
+				ShixingUtil.print(id,webtext+" instance already exists!");
 			sc.close();
 		} catch (SQLException | ClassNotFoundException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			ShixingUtil.writefile(webtext, "parse failed");
 		}
 	}
 }
+

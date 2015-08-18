@@ -26,6 +26,8 @@ public class ShixingConsumer implements Runnable{
 	
 	private volatile BlockingQueue<String> queue;
 	
+	private boolean bool = true;
+	
 	private String id;
 	
 	public ShixingConsumer(BlockingQueue<String> queue, String id) {
@@ -37,6 +39,7 @@ public class ShixingConsumer implements Runnable{
 	public void run() {
 		while(true) {
 			if(!queue.isEmpty()) {
+				bool = true;
 				String url = queue.poll();
 				try {
 					login(url);
@@ -47,6 +50,10 @@ public class ShixingConsumer implements Runnable{
 				}
 			}
 			else try {
+				if(bool) {
+					ShixingUtil.print(id,"queue is empty now!");
+					bool = false;
+				}
 				TimeUnit.SECONDS.sleep(ShixingConfig.consumer_sleep_second);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -88,7 +95,7 @@ public class ShixingConsumer implements Runnable{
 				//System.out.println("success insertion");
 			}
 			else 
-				ShixingUtil.print(id,webtext+" instance already exists!");
+				ShixingUtil.print(id,"instance "+arr[0]+" already exists!");
 			sc.close();
 		} catch (SQLException | ClassNotFoundException e) {
 			//e.printStackTrace();

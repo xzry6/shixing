@@ -2,12 +2,11 @@ package com.pier.util;
 
 public class MailBean {
 
-	private String toEmail;
+	private String toEmail = ConfigUtil.getString("email.receiver.name", null);
 	private String subject;
 	private String content;
 	
-	public MailBean(String toEmail, String subject, String content){
-		this.toEmail = toEmail;
+	public MailBean(String subject, String content){
 		this.subject = subject;
 		this.content = content;
 	}

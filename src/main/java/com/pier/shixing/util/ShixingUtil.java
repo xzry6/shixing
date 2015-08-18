@@ -9,6 +9,10 @@ import java.util.Date;
 
 import org.apache.http.client.config.RequestConfig;
 
+import com.pier.util.MailBean;
+import com.pier.util.MailUtil;
+
+
 public class ShixingUtil {
 	
 	public static String output = ShixingConfig.log_path;
@@ -51,6 +55,11 @@ public class ShixingUtil {
 	
 	public static void print(String id, String info) {
 		System.out.println(ShixingUtil.getTime()+id+", "+info);
+	}
+	
+	public static void email(String subject, String msg) {
+		MailBean bean = new MailBean(subject, msg);
+		MailUtil.sendMail(bean);
 	}
 	
 	public static String getTime() {

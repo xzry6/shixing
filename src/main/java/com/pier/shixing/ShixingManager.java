@@ -36,8 +36,8 @@ public class ShixingManager {
 		initDelay = initDelay > 0 ? initDelay : ONEDAY + initDelay;
 		
 		executor.scheduleAtFixedRate(new ShixingDailyProducer(queue,"daily producer"), initDelay, ONEDAY, TimeUnit.MILLISECONDS);
-		executor.execute(new ShixingFullTimeProducer(pagequeue,queue,"producer 1"));
-		executor.execute(new ShixingFullTimeProducer(pagequeue,queue,"producer 2"));
+		//executor.execute(new ShixingFullTimeProducer(pagequeue,queue,"producer 1"));
+		//executor.execute(new ShixingFullTimeProducer(pagequeue,queue,"producer 2"));
 		executor.execute(new ShixingConsumer(queue,"consumer 1"));
 		executor.execute(new ShixingConsumer(queue,"consumer 2"));
 	}
